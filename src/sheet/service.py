@@ -113,7 +113,6 @@ class SheetService:
             col=bonus.column_index,
         )
         col_name: str = rowcol_to_a1(row=1, col=bonus.column_index)[0:-1]
-        logger.info(f"{cell_name}:{col_name}")
 
         bonuses: list[Cell] = worksheet.range(name=f"{cell_name}:{col_name}")
         bonus.bonuses = [
