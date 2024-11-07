@@ -11,6 +11,7 @@ python = ">=3.11,<3.14"
 loguru = "^0.7.2"
 gspread = "^6.1.4"
 pydantic-settings = "^2.6.1"
+aiogram = "^3.14.0"
 
 [tool.poetry.group.dev.dependencies]
 typing-extensions = "^4.12.2"
