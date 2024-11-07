@@ -1,5 +1,4 @@
 *
 !src/
-!docker/
 !requirements.txt
 __pycache__
