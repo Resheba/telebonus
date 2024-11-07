@@ -3,7 +3,7 @@ package-mode = false
 name = "telebonus"
 version = "0.0.1"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Resheba github.com/Resheba"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
