@@ -13,10 +13,10 @@ settings: Settings = Settings.get_settings()
 
 @router.message(CommandStart())
 async def start_command(message: Message) -> None:
-    await message.reply(
+    await message.answer(
         f"Привет{', ' + message.chat.full_name if message.chat.first_name else ''}!\n"
         "Доступные команды:"
-        f"\n📍\t/{settings.TELEGRAM_ME_COMMAND}\n📍\t/{settings.TELEGRAM_COMMON_COMMAND}",
+        f"\n📍\t/{settings.TELEGRAM_ME_COMMAND}",
     )
 
 
@@ -35,13 +35,8 @@ async def me_command(message: Message, bot: Bot, sheet_service: SheetService) ->
         await message.reply("❌\tПроизошла ошибка.")
         logger.exception(ex)
     else:
-        await message.reply(
+        await message.answer(
             f"✅\tВаш бонус, {bonus.username}:\n"
             f"📍\tKPI: {bonus.kpi}\n"
             f"📍\tВсего: {bonus.amount}",
         )
-
-
-@router.message(Command(settings.TELEGRAM_COMMON_COMMAND))
-async def common_command(message: Message, bot: Bot, sheet_service: SheetService) -> None:
-    await bot.send_chat_action(chat_id=message.chat.id, action="typing")

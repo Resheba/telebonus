@@ -10,12 +10,22 @@ class User:
 
 
 class Bonus:
-    __slots__ = ("username", "amount", "kpi")
+    __slots__ = ("username", "amount", "kpi", "column_index", "bonuses")
 
-    def __init__(self, username: str, amount: str, kpi: str) -> None:
+    def __init__(self, username: str, amount: str, kpi: str, column_index: int) -> None:
         self.username: str = username
         self.amount: str = amount
         self.kpi: str = kpi
+        self.column_index: int = column_index
+        self.bonuses: list[BonusProject] | None = None
 
     def __repr__(self) -> str:
-        return f"Bonus({self.username!r}, {self.amount!r}, {self.kpi!r})"
+        return f"Bonus({self.username!r}, {self.amount!r}, {self.kpi!r}, col={self.column_index!r})"
+
+
+class BonusProject:
+    __slots__ = ("name", "bonus")
+
+    def __init__(self, name: str, bonus: str) -> None:
+        self.name: str = name
+        self.bonus: str = bonus

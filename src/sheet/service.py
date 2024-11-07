@@ -1,13 +1,14 @@
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from gspread.utils import a1_range_to_grid_range, rowcol_to_a1
 from loguru import logger
 
 from src.config import Settings
 
 from .exception import SheetBonusNotFoundError, SheetUserNotFoundError
 from .reader import Reader
-from .schemas import Bonus, User
+from .schemas import Bonus, BonusProject, User
 
 if TYPE_CHECKING:
     from gspread.cell import Cell
@@ -26,6 +27,7 @@ class SheetService:
         current_bonus_range: str,
         current_kpi_range: str,
         current_names_range: str,
+        current_bonus_pj_names_range: str,
     ) -> None:
         self._user_list_name: str = user_list_name
         self._user_name_range: str = user_name_range
@@ -35,6 +37,10 @@ class SheetService:
         self._current_bonus_range: str = current_bonus_range
         self._current_kpi_range: str = current_kpi_range
         self._current_names_range: str = current_names_range
+        self._current_bonus_pj_names_range: str = current_bonus_pj_names_range
+        self._current_bonus_pj_start_row: int = a1_range_to_grid_range(
+            self._current_bonus_pj_names_range,
+        ).get("startRowIndex", 0)
 
         self._reader: Reader = Reader(
             secret_filename=secret_filename,
@@ -53,6 +59,7 @@ class SheetService:
             current_bonus_range=settings.CURRENT_BONUS_RANGE,
             current_kpi_range=settings.CURRENT_KPI_RANGE,
             current_names_range=settings.CURRENT_NAMES_RANGE,
+            current_bonus_pj_names_range=settings.CURRENT_BONUS_PJ_NAMES_RANGE,
         )
 
     def get_users(self) -> tuple[User, ...]:
@@ -82,7 +89,7 @@ class SheetService:
         kpis: list[Cell] = worksheet.range(name=self._current_kpi_range)
         bonuses: list[Cell] = worksheet.range(name=self._current_bonus_range)
         return tuple(
-            Bonus(username=name.value, amount=bonus.value, kpi=kpi.value)
+            Bonus(username=name.value, amount=bonus.value, kpi=kpi.value, column_index=name.col)
             for name, bonus, kpi in zip(names, bonuses, kpis, strict=False)
             if name.value and bonus.value and kpi.value
         )
@@ -97,3 +104,20 @@ class SheetService:
             logger.error(f"Bonus for {user.name!r} not found")
             raise SheetBonusNotFoundError(f"Bonus for {user.name!r} not found")
         return bonus
+
+    def inject_bonus_projects(self, bonus: Bonus) -> None:
+        worksheet: Worksheet = self._reader.worksheet(self._current_list_name)
+        names: list[Cell] = worksheet.range(name=self._current_bonus_pj_names_range)
+        cell_name: str = rowcol_to_a1(
+            row=self._current_bonus_pj_start_row + 1,
+            col=bonus.column_index,
+        )
+        col_name: str = rowcol_to_a1(row=1, col=bonus.column_index)[0:-1]
+        logger.info(f"{cell_name}:{col_name}")
+
+        bonuses: list[Cell] = worksheet.range(name=f"{cell_name}:{col_name}")
+        bonus.bonuses = [
+            BonusProject(name=name.value, bonus=bonus.value)
+            for name, bonus in zip(names, bonuses, strict=False)
+            if name.value and bonus.value
+        ]
