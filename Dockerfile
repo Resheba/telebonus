@@ -8,8 +8,4 @@ WORKDIR /code
 
 COPY . .
 
-RUN chmod 775 docker/app.sh
-
-EXPOSE 80
-
-CMD ["docker/app.sh"]
+CMD ["python", "-m", "src.main"]

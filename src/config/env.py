@@ -1,4 +1,5 @@
 from functools import cache
+from typing import Self
 
 from gspread.utils import a1_range_to_grid_range
 from pydantic import ValidationInfo, field_validator
@@ -17,11 +18,11 @@ class Settings(BaseSettings):
     SERVICE_ACCOUNT_PATH: str = "./config/cred.json"
     SHEET_KEY: str = ""
 
-    LIST_USERS: str = ""
+    LIST_USERS: str = "users"
     USER_NAME_RANGE: str = "A:A"
     USER_TID_RANGE: str = "B:B"
 
-    LIST_CURRENT: str = ""
+    LIST_CURRENT: str = "current_bonus"
     CURRENT_BONUS_RANGE: str = "I1:1"
     CURRENT_KPI_RANGE: str = "I2:2"
     CURRENT_NAMES_RANGE: str = "I4:4"
@@ -46,5 +47,5 @@ class Settings(BaseSettings):
 
     @classmethod
     @cache
-    def get_settings(cls) -> "Settings":
+    def get_settings(cls) -> Self:
         return cls()
