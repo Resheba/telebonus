@@ -1,14 +1,16 @@
 [tool.poetry]
 package-mode = false
-name = "name"
-version = "0.0.0"
+name = "telebonus"
+version = "0.0.1"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Resheba github.com/Resheba"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.14"
 loguru = "^0.7.2"
+gspread = "^6.1.4"
+pydantic-settings = "^2.6.1"
 
 [tool.poetry.group.dev.dependencies]
 typing-extensions = "^4.12.2"
@@ -31,6 +33,7 @@ target-version = "py311"
 [tool.ruff.lint]
 select = [ "ALL" ]
 ignore = [
+    "B019",     # cache
     "D100",     # pydocstyle: undocumented-public-module
     "D101",     # pydocstyle: undocumented-public-class
     "D102",     # pydocstyle: undocumented-public-method
