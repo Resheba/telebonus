@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from gspread.auth import service_account
 from gspread.exceptions import GSpreadException, WorksheetNotFound
 from gspread.worksheet import Worksheet
+from loguru import logger
 
 from .exception import SheetError, SheetNotFoundError
 
@@ -25,8 +26,10 @@ class Reader:
         try:
             return self._sheet.worksheet(worksheet)
         except WorksheetNotFound as ex:
-            raise SheetNotFoundError(f"{worksheet} not found") from ex
+            logger.error(f"Worksheet {worksheet!r} not found")
+            raise SheetNotFoundError(f"Worksheet {worksheet!r} not found") from ex
         except GSpreadException as ex:
+            logger.error(ex)
             raise SheetError from ex
 
     def worksheet(self, worksheet: str) -> Worksheet:

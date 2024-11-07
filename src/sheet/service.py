@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 from gspread.utils import a1_range_to_grid_range, rowcol_to_a1
 from loguru import logger
@@ -48,7 +48,7 @@ class SheetService:
         )
 
     @classmethod
-    def from_settings(cls, settings: Settings) -> "SheetService":
+    def from_settings(cls, settings: Settings) -> Self:
         return cls(
             secret_filename=settings.SERVICE_ACCOUNT_PATH,
             sheet_key=settings.SHEET_KEY,
