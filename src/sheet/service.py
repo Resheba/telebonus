@@ -24,6 +24,7 @@ class SheetService:
         user_tid_range: str,
         current_list_name: str,
         current_bonus_range: str,
+        current_kpi_range: str,
         current_names_range: str,
     ) -> None:
         self._user_list_name: str = user_list_name
@@ -32,6 +33,7 @@ class SheetService:
 
         self._current_list_name: str = current_list_name
         self._current_bonus_range: str = current_bonus_range
+        self._current_kpi_range: str = current_kpi_range
         self._current_names_range: str = current_names_range
 
         self._reader: Reader = Reader(
@@ -49,6 +51,7 @@ class SheetService:
             user_tid_range=settings.USER_TID_RANGE,
             current_list_name=settings.LIST_CURRENT,
             current_bonus_range=settings.CURRENT_BONUS_RANGE,
+            current_kpi_range=settings.CURRENT_KPI_RANGE,
             current_names_range=settings.CURRENT_NAMES_RANGE,
         )
 
@@ -76,11 +79,12 @@ class SheetService:
     def get_bonuses(self) -> tuple[Bonus, ...]:
         worksheet: Worksheet = self._reader.worksheet(self._current_list_name)
         names: list[Cell] = worksheet.range(name=self._current_names_range)
+        kpis: list[Cell] = worksheet.range(name=self._current_kpi_range)
         bonuses: list[Cell] = worksheet.range(name=self._current_bonus_range)
         return tuple(
-            Bonus(username=name.value, amount=bonus.value)
-            for name, bonus in zip(names, bonuses, strict=False)
-            if name.value and bonus.value
+            Bonus(username=name.value, amount=bonus.value, kpi=kpi.value)
+            for name, bonus, kpi in zip(names, bonuses, kpis, strict=False)
+            if name.value and bonus.value and kpi.value
         )
 
     def get_bonus_by_tid(self, tid: str) -> Bonus:

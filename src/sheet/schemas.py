@@ -10,11 +10,12 @@ class User:
 
 
 class Bonus:
-    __slots__ = ("username", "amount")
+    __slots__ = ("username", "amount", "kpi")
 
-    def __init__(self, username: str, amount: str) -> None:
+    def __init__(self, username: str, amount: str, kpi: str) -> None:
         self.username: str = username
         self.amount: str = amount
+        self.kpi: str = kpi
 
     def __repr__(self) -> str:
-        return f"Bonus({self.username!r}, {self.amount!r})"
+        return f"Bonus({self.username!r}, {self.amount!r}, {self.kpi!r})"
