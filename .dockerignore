@@ -2,4 +2,4 @@
 !src/
 !docker/
 !requirements.txt
-!config/
+__pycache__
